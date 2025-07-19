@@ -12,6 +12,7 @@ LightspeedPyAPI/
 ├── new_api/                 # Experimental client/models
 │   ├── api_client.py        # Minimal API wrapper
 │   ├── lookups.py           # Lookup classes for names ↔ IDs
+│   ├── lookups_runtime.py   # Runtime lookup initialization
 │   ├── main.py              # Example product creation script
 │   └── models.py            # Pydantic models for Product/Variant
 ├── CheckExisting.py, OrderProduct.py, etc.
@@ -33,7 +34,7 @@ class LightspeedAPIClient:
    - `Sync.py` contains `sync_data()` which fetches paginated data from Lightspeed, processes it, and updates the local DB.
 
 2. **new_api/**
-   - `models.py` uses Pydantic to model product data and to convert friendly names to IDs via lookup tables.
+   - `models.py` uses Pydantic to model product data and to convert friendly names to IDs via lookup tables. Lookups are loaded at runtime by `lookups_runtime.setup()`.
    - `api_client.py` is a lightweight wrapper around Lightspeed endpoints.
    - `main.py` demonstrates loading lookups and creating a product with variants.
 
