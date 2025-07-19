@@ -1,8 +1,8 @@
 """Example script demonstrating usage of the API client."""
 
-from api_client import LightspeedAPIClient
-from lookups import BrandLookup, SupplierLookup, CategoryLookup
-from models import Product
+from new_api.api_client import LightspeedAPIClient
+from new_api.lookups import BrandLookup, SupplierLookup, CategoryLookup
+from new_api.models import Product
 import requests
 
 if __name__ == "__main__":
