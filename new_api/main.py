@@ -1,8 +1,8 @@
 """Example script demonstrating usage of the API client."""
 
 from new_api.api_client import LightspeedAPIClient
-from new_api.lookups import BrandLookup, SupplierLookup, CategoryLookup
 from new_api.models import Product
+from new_api.lookups_runtime import setup
 import requests
 
 if __name__ == "__main__":
@@ -10,14 +10,8 @@ if __name__ == "__main__":
         # Create the API client using the token from the environment by default
         client = LightspeedAPIClient()
 
-        # Initialize lookup tables
-        brands_data = client.get_brands()
-        suppliers_data = client.get_suppliers()
-        categories_data = client.get_categories()
-
-        brands_lookup = BrandLookup(brands_data)
-        suppliers_lookup = SupplierLookup(suppliers_data)
-        categories_lookup = CategoryLookup(categories_data)
+        # Initialize lookup tables for runtime conversion
+        setup(client)
         
         # Example product data
         product_data = {
@@ -34,12 +28,7 @@ if __name__ == "__main__":
             "custom_fields": {"material": "cotton"}
         }
         
-        product = Product(
-            **product_data,
-            brands_lookup=brands_lookup,
-            suppliers_lookup=suppliers_lookup,
-            categories_lookup=categories_lookup,
-        )
+        product = Product(**product_data)
         created_product = client.create_product(product.dict())
         print("Product created successfully:", created_product)
         
