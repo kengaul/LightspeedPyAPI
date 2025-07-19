@@ -121,11 +121,12 @@ def load_products_from_file(filename='products.json'):
 
 def get_product_id_supplier_code(products_dict, supplier_code):
     """
-    Check if the supplier code exists in products_dict and return the product ID if found.
-    
-    :param products_dict: Dictionary of products keyed by SKU.
-    :param sku: The SKU to search for.
-    :return: The product ID if found, otherwise None.
+    Check if ``supplier_code`` exists in ``products_dict`` and return the
+    product ID if found.
+
+    :param products_dict: Dictionary of products keyed by supplier code.
+    :param supplier_code: The supplier code to look up in ``products_dict``.
+    :return: The product ID if found, otherwise ``None``.
     """
     if supplier_code in products_dict:
         product = products_dict[supplier_code]
@@ -179,7 +180,7 @@ if __name__ == "__main__":
         item = get_product_id_supplier_code(product,supplier_code)
         if item is not None:
             if item["supplier_id"] != inscope_supplier:
-                logging.info(f"Supplier code found but not inscope suppler {file.name} - {item["sku"]} - {supplierid_dict[item["supplier_id"]]["name"]} ignoring")
+                logging.info(f"Supplier code found but not inscope supplier {file.name} - {item['sku']} - {supplierid_dict[item['supplier_id']]['name']} ignoring")
             else:
                 lightspeed_api.upload_image(item,file)
         else:
@@ -188,9 +189,9 @@ if __name__ == "__main__":
             item = get_product_id_supplier_code(product,supplier_code)
             if item is not None:
                 if item["supplier_id"] != inscope_supplier:
-                    logging.info(f"Supplier code found but not inscope suppler {file.name} - {item["sku"]} - {supplierid_dict[item["supplier_id"]]["name"]} ignoring")
+                    logging.info(f"Supplier code found but not inscope supplier {file.name} - {item['sku']} - {supplierid_dict[item['supplier_id']]['name']} ignoring")
                 else:
                     #lightspeed_api.upload_image(item,file)
-                    logging.info(f"Sku Images present {len(item["skuImages"])} {file.name} - {item["sku"]} ")
+                    logging.info(f"Sku Images present {len(item['skuImages'])} {file.name} - {item['sku']} ")
             else:
                 logging.info(f"While processing {file.name} no product found {supplier_code}")
