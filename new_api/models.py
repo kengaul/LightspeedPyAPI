@@ -1,4 +1,4 @@
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, root_validator
 from typing import List, Optional, Union
 
 class VariantAttributes(BaseModel):
@@ -24,14 +24,17 @@ class Product(BaseModel):
     tags: Optional[List[str]] = None
     custom_fields: Optional[dict] = None
 
-    @model_validator(mode='before')
+    @root_validator(pre=True)
     def convert_names_to_ids(cls, values):
-        from new_api.main import brands_lookup, suppliers_lookup, categories_lookup
-        if isinstance(values.get('brand'), str):
+        brands_lookup = values.pop('brands_lookup', None)
+        suppliers_lookup = values.pop('suppliers_lookup', None)
+        categories_lookup = values.pop('categories_lookup', None)
+
+        if isinstance(values.get('brand'), str) and brands_lookup is not None:
             values['brand'] = brands_lookup.get_id(values['brand'])
-        if isinstance(values.get('supplier'), str):
+        if isinstance(values.get('supplier'), str) and suppliers_lookup is not None:
             values['supplier'] = suppliers_lookup.get_id(values['supplier'])
-        if isinstance(values.get('category'), str):
+        if isinstance(values.get('category'), str) and categories_lookup is not None:
             values['category'] = categories_lookup.get_id(values.get('category'))
         return values
 
