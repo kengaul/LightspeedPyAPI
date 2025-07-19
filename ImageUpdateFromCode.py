@@ -6,6 +6,7 @@ import logging
 import math
 import json,logging
 import pathlib
+import re
 from collections import Counter
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -138,13 +139,25 @@ def get_product_id_supplier_code(products_dict, supplier_code):
         return None
     
 def get_code_from_filename(filename_stem):
+    """Return the supplier code portion of a filename stem.
+
+    ``filename_stem`` may include a numeric suffix separated by either an
+    underscore or hyphen.  This helper strips that suffix so that both
+    ``"ABC123_1"`` and ``"ABC123-1"`` yield ``"ABC123"``.
+
+    Parameters
+    ----------
+    filename_stem : str
+        The stem of the filename (without extension).
+
+    Returns
+    -------
+    str
+        The extracted supplier code.
     """
-    Extract the suppliercode from a filename stem that may have a suffix with a hyphen and sequence number.
-    
-    :param filename_stem: The stem of the filename (without extension).
-    :return: The extracted Supplier Code.
-    """
-    return filename_stem.split('_')[0]  # Split by '-' and take the first part
+
+    # Split on the first underscore or hyphen and return the leading portion.
+    return re.split(r"[-_]", filename_stem)[0]
 
 if __name__ == "__main__":
     if len(sys.argv) > 4 or len(sys.argv) <3:
