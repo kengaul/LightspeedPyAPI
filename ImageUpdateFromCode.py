@@ -18,6 +18,7 @@ class LightspeedAPI:
         self.store = store
 
     def load_suppliers(self):
+        response = None
         try:
             url = f"https://{self.store}.retail.lightspeed.app/api/2.0/suppliers"
             headers = {
@@ -30,12 +31,15 @@ class LightspeedAPI:
             else:
                 logging.info(f"No Suppliers Found")
                 return None
+        except requests.exceptions.JSONDecodeError:
+            logging.error(
+                f"Failed to parse json from response: {e} - {response.content if response else ''}"
+            )
         except requests.exceptions.RequestException as e:
             logging.error(f"HTTP Request exception: {e}")
-        except requests.exceptions.JSONDecodeError:
-            logging.error(f"Failed to parse json from response: {e} - {response.content}")
     
     def search_products_by_sku(self, skus):
+        response = None
         try:
             url = f"https://{self.store}.retail.lightspeed.app/api/2.0/search"
             params = [("type", "products")]
@@ -52,12 +56,15 @@ class LightspeedAPI:
             else:
                 logging.info(f"No product found for {skus}")
                 return None
+        except requests.exceptions.JSONDecodeError:
+            logging.error(
+                f"Failed to parse json from response: {e} - {response.content if response else ''}"
+            )
         except requests.exceptions.RequestException as e:
             logging.error(f"HTTP Request exception: {e}")
-        except requests.exceptions.JSONDecodeError:
-            logging.error(f"Failed to parse json from response: {e} - {response.content}")
 
     def search_products_by_id(self, ids):
+        response = None
         try:
             url = f"https://{self.store}.retail.lightspeed.app/api/2.0/search"
             params = [("type", "products")]
@@ -75,12 +82,16 @@ class LightspeedAPI:
             else:
                 logging.info(f"No product found for {ids}")
                 return None
+        except requests.exceptions.JSONDecodeError:
+            logging.error(
+                f"Failed to parse json from response: {e} - {response.content if response else ''}"
+            )
         except requests.exceptions.RequestException as e:
             logging.error(f"HTTP Request exception: {e}")
-        except requests.exceptions.JSONDecodeError:
-            logging.error(f"Failed to parse json from response: {e} - {response.content}")
 
-    def upload_image(self, product,image_path):
+    def upload_image(self, product: dict, image_path: str) -> str | None:
+        """Upload ``image_path`` to the given product in Lightspeed."""
+        response = None
         try:
             if product['variant_parent_id'] is None:
                 target_product_id=product["id"]
@@ -106,10 +117,10 @@ class LightspeedAPI:
                     return "Image Update Failed"
             else:
                 print(f"Skipping {image_path} as product already has {imagecount} images")
+        except requests.exceptions.JSONDecodeError:
+            print("Failed to parse JSON from response ", response.content if response else "")
         except requests.exceptions.RequestException as e:
             print("HTTP Request failed with ", e)
-        except requests.exceptions.JSONDecodeError:
-            print("Failed to parse JSON from response ", response.content)
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
