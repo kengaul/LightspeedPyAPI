@@ -3,20 +3,29 @@ from typing import List, Optional, Union
 
 from .lookups_runtime import brand_lookup, supplier_lookup, category_lookup
 
+
 class VariantAttributes(BaseModel):
-    size: Optional[str]
-    color: Optional[str]
-    material: Optional[str]
+    """Optional attributes for a product variant."""
+
+    size: Optional[str] = None
+    color: Optional[str] = None
+    material: Optional[str] = None
+
 
 class Variant(BaseModel):
-    id: Optional[str]
+    """Representation of a variant row."""
+
+    id: Optional[str] = None
     sku: str
     price: float
     inventory_level: int
     attributes: VariantAttributes
 
+
 class Product(BaseModel):
-    id: Optional[str]
+    """Simplified product model used for order imports."""
+
+    id: Optional[str] = None
     name: str
     description: Optional[str] = None
     category: Union[str, Optional[str]] = None

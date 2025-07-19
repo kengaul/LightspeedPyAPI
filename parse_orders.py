@@ -28,23 +28,12 @@ def products_to_rows(products) -> List[dict]:
 
 
 def write_output(rows: List[dict], out_path: Path) -> None:
-    if out_path.suffix == ".xlsx":
-        try:
-            from openpyxl import Workbook
-        except ImportError as exc:
-            raise RuntimeError("openpyxl is required for Excel output") from exc
-        wb = Workbook()
-        ws = wb.active
-        if rows:
-            ws.append(list(rows[0].keys()))
-        for r in rows:
-            ws.append(list(r.values()))
-        wb.save(out_path)
-    else:
-        with open(out_path, "w", newline="", encoding="utf-8") as f:
-            writer = csv.DictWriter(f, fieldnames=rows[0].keys())
-            writer.writeheader()
-            writer.writerows(rows)
+    """Write parsed rows to a text CSV file."""
+
+    with open(out_path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=rows[0].keys())
+        writer.writeheader()
+        writer.writerows(rows)
 
 
 def main() -> None:
