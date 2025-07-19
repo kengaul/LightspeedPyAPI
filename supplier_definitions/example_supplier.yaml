@@ -1,0 +1,13 @@
+product:
+  name: DESCRIPTION
+  brand: BRAND
+  category: CATEGORY
+  supplier: SUPPLIER
+variants:
+  sku: SKU
+  price: COST
+  inventory_level: QTY
+  attributes:
+    size: SIZE
+    color: COLOR
+    material: MATERIAL
