@@ -48,6 +48,46 @@ class LightspeedAPIClient:
 - **CSV workflows** are used to process supplier order files and determine which products need creation or updates.
 - **Database sync** via `DB/Sync.py` fetches suppliers, products, sales, consignments, and inventory from Lightspeed into a local SQLite database.
 
+## Supplier order processing
+
+Order files from different suppliers have inconsistent column names.  Mapping files in `supplier_definitions/` describe how each supplier's export should be translated so that scripts can operate on a common set of fields.  A mapping file is a small YAML document that lists which column contains the SKU, name, price and any other values required by the tooling.
+
+Example snippet:
+
+```yaml
+sku: "Product Code"
+name: "Description"
+price: "Net Price"
+```
+
+### Parsing orders
+
+Use `parse_orders.py` to normalise supplier files.  It reads the appropriate mapping file and writes a standard CSV with columns Lightspeed expects.
+
+```bash
+# CSV input
+LIGHTSPEED_TOKEN=... LIGHTSPEED_STORE=store \
+python parse_orders.py --supplier acme ./orders.csv > parsed.csv
+
+# PDF input
+python parse_orders.py --supplier acme ./order.pdf --pdf > parsed.csv
+```
+
+### Uploading images
+
+If product images are available you can rename and upload them once the order CSV is parsed.  The `imageupdate.py` script looks for images named with the SKU and sends them to Lightspeed using the same environment variables:
+
+```bash
+LIGHTSPEED_TOKEN=... LIGHTSPEED_STORE=store \
+python imageupdate.py jpg ./images parsed.csv
+```
+
+For more advanced matching (for example using supplier codes inside the filename) `ImageUpdateFromCode.py` provides additional logic:
+
+```bash
+python ImageUpdateFromCode.py jpg ./images "Acme Co"
+```
+
 ## Learning paths
 
 If you're new to the repository, consider exploring the following topics:
