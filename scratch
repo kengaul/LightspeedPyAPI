@@ -1,0 +1,448 @@
+{
+    "all_outlets_tax": {
+        "is_default": "False",
+        "tax_id": "VATID"
+    },
+    "name": "test",
+    "sku": "661678712",
+    "source": "USER",
+    "is_active": "True",
+    "price_including_tax": 1.2,
+    "price_excluding_tax": 1,
+    "supply_price": 0.36,
+    "supplier_code": "ABC10",
+    "product_category_id": "default",
+    "account_code_sale": "200",
+    "account_code_purchase": "631",
+    "variants": [
+        {
+            "variant_definitions": {
+                "attribute_id": "variant_type_id",
+                "value": "variantvalue"
+            },
+            "sku": "662498",
+            "price_including_tax": 1.2,
+            "price_excluding_tax": 1,
+            "supply_price": 0.36,
+            "supplier_code": "ABC20"
+        },
+        {
+            "variant_definitions": {
+                "attribute_id": "variant_type_id2",
+                "value": "variantvalue2"
+            },
+            "sku": "66257",
+            "price_including_tax": 1.2,
+            "price_excluding_tax": 1,
+            "supply_price": 0.36,
+            "supplier_code": "AB30"
+        }
+    ]
+}
+
+
+pdfimages -j -p filename prefix
+pdftotext filename order.txt
+grep '^50' order.txt > orderskus.txt
+
+rename images in order: (Note zsh array index starts at 1!!)
+
+code=($(egrep '^.{3,4}$' product-image-sheet-hmcinnamon4725057268p.txt))  
+i=1
+for file in images-*.jpg
+do
+ 	if [[ -n "$code[i]" ]] 
+	then
+		echo $file
+		mv $file ${code[i]}.jpg 
+		((i++))
+	fiCODE
+done
+
+CODE	DESCRIPTION	BARCODES	QNTY	COST	VARIANTNAME	VARIANTTYPE	VARIANTVALUE
+dummy   line
+VARIANTNAME = =LEFT(B2,FIND("-",B2)-1)
+
+2	3	5	7	5
+
+   7A0321           10257/1405                             2 9781797217475    01 BK    AC Marvel Mazes                        Sean C. Jackson           P    13.99 50.00                                                          13.99 1
+
+Combine pdf2text output into order csv
+echo "sku,"
+egrep '^(50|£[0-9]).*' Receipt.txt | paste -d "," - - 
+
+felt so good:
+orderfile=order_1000042510.pdf
+pdftotext -nopgbrk -layout $orderfile
+egrep '\b[0-9]{10,13}\b' ${orderfile:r}.txt | grep '£' | sed 's/^.*\([0-9]\{13\}\).*$/\1/'
+code=($(egrep '\b[0-9]{10,13}\b' ${orderfile:r}.txt | grep '£' | sed 's/^.*\([0-9]\{13\}\).*$/\1/'))
+pdfimages -j {$orderfile:r}.pdf image
+*** manually remove any extra images like logos from the directory
+code=($(cat codelist.txt))
+
+carolinegardner:
+supplier="Caroline Gardner Publishing Ltd"
+orderfile=PS036XX00002335
+code=($(cut -f1 -d"," ${orderfile:r}export.csv | tail +2))
+pdfimages -j ${orderfile:r}.pdf image
+*** manually remove any extra images like logos from the directory
+i=1
+for file in image-*.jpg
+do
+ 	if [[ -n "$code[i]" ]] 
+	then
+		echo $file
+		mv $file ${code[i]}.jpg 
+		((i++))
+	fi
+done
+cd ../..
+python /Users/ken/Documents/Lightspeed/PythonAPI/ImageUpdateFromCode.py jpg CarolineGardner/${orderfile} $supplier
+
+bellybutton:
+orderfile=PS104XX00000989.pdf
+pdftotext -nopgbrk -layout $orderfile
+egrep '^[0-9]{10,13}\b' ${orderfile:r}.txt
+code=($(egrep '\b[0-9]{10,13}\b' ${orderfile:r}.txt | sed 's/^.*\([0-9]\{13\}\).*$/\1/'))
+code=($(egrep '^[0-9]{10,13}\b' ${orderfile:r}.txt))
+pdfimages -j ${orderfile:r}.pdf image
+*** manually remove any extra images like logos from the directory
+code=($(cat codelist.txt))
+
+i=1
+for file in image-*.jpg
+do
+ 	if [[ -n "$code[i]" ]] 
+	then
+		echo $file
+		mv $file ${code[i]}.jpg 
+		((i++))
+	fi
+done
+
+POM:
+orderfile=PS104XX00000989
+pdftotext -nopgbrk -layout {$orderfile:r}.pdf
+egrep '^[0-9]{10,13}\b' ${orderfile:r}.txt
+code=($(egrep '505[0-9]{10}\b' ${orderfile:r}.txt | sed 's/^.*505/505/'))
+pdfimages -j ${orderfile:r}.pdf image
+*** manually remove any extra images like logos from the directory
+
+i=1
+for file in image-*.jpg
+do
+ 	if [[ -n "$code[i]" ]] 
+	then
+		echo $file
+		mv $file ${code[i]}.jpg 
+		((i++))
+	fi
+done
+
+bellybutton:
+code=($(egrep -i "product" PS104XX00000647\ -\ Confirmation\ with\ Photos.txt | sed 's/  */,/g' | cut -f3 -d"," | sed 's/$/.jpg/'))
+i=1
+for file in image-*.jpg
+do
+ 	if [[ -n "$code[i]" ]] 
+	then
+		echo $file
+		mv $file ${code[i]}.jpg 
+		((i++))
+	fi
+done
+
+for i in *.jpg
+do
+echo ${i%%.jpg}
+done > skulist.txt
+
+
+edit into csv 
+handle,sku,quantity,supply_price
+
+IFS=','
+for i in $(cat images.txt)
+do
+    echo $i
+    read -A attr < $(echo $i)
+    curl -o $attr[2] $attr[1]
+done
+
+for i in $(cat images.txt)                                                                    
+do                                                                                            
+    echo $i | sed "s/\([^,]*\),\(.*\)$/curl -o \1.jpg \'\2\'/"                                        
+done    
+
+Products with images:
+jq '.[] | select(.image_url != "https://secure.vendhq.com/images/placeholder/product/no-image-white-standard.png") | {sku: .sku, id: .id, variant_parent_id: .variant_parent_id}' products.json
+
+jq '.[] | select(.variant_parent_id is not null)
+
+jq '
+  # Step 1: Extract parent products with assigned images
+  . as $all_products 
+  | $all_products 
+  | map(select(.supplier_id == "02dcd191-ae34-11e8-ed44-9ff64343d690" and .image_url != "https://secure.vendhq.com/images/placeholder/product/no-image-white-standard.png")) 
+  | map({id: .id, sku: .sku}) as $parents_with_images 
+
+  # Step 2: Find variants with empty sku_images
+  | $all_products 
+  | map(select(.variant_parent_id != null and (.skuImages | length == 0))) 
+  | map(select(.variant_parent_id as $parent_id | $parents_with_images | any(.id == $parent_id)))
+
+  # Step 3: Output desired fields
+  | map({sku: .sku, id: .id, parent_id: .variant_parent_id})
+' products.json
+
+
+For a given supplier find products with no images and construct URL for image
+jq -r 'map(select(type == "object" and .supplier_id !=null and .supplier_id == "02dcd191-ae34-11e8-ed44-9ff64343d690" and .image_url == "https://secure.vendhq.com/images/placeholder/product/no-image-white-standard.png")) | .[] | "https://salespak-cdn.iannovate.co.uk/ftpcinnamon/" + .supplier_code' products.json > CinnamonAitch/newimages/missingcode.txt
+
+Find products with no images:
+jq -r  'map(select(type == "object" and .supplier_id !=null and .supplier_id == "02dcd191-ae34-11e8-ed44-9ff64343d690" and (.skuImages | length == 0))) | sort_by(.variant_parent_id) | .[] | .sku, .variant_parent_id' products.json
+
+Find online products with no images:
+ecwid_enabled_webstore
+jq -r '
+  map(
+    select(
+      type == "object"
+      and .supplier_id != null
+      and .supplier_id == "3388e56c-7345-49c3-b20c-a4bc8456fb46"
+      and .ecwid_enabled_webstore == true
+      and (
+        (.has_variants == false and (.images | length == 0)) or
+        (.variant_parent_id != null and (.sku_images | length == 0))
+      )
+    )
+  )
+  | sort_by(.has_variants)
+  | .[]
+  | "https://carolinegardner.com/cdn/shop/files/" + .supplier_code + ".jpg"
+' products.json
+
+
+
+for i in $(cat product-order.csv | rev | cut -f1 -d"," | rev | tail +2 | perl -pe 's/\r\n/\n/')
+do
+curl -O $i
+done
+
+https://carolinegardner.com/cdn/shop/files/MGG105.jpg
+https://carolinegardner.com/cdn/shop/files/ICP100jpg.jpg?v=1720535621&width=1080
+https://carolinegardner.com/cdn/shop/files/CBD111.jpg?v=1719930315&width=1080
+https://carolinegardner.com/cdn/shop/files/PKM155_2.jpg?v=1720172181&width=540
+
+
+for i in $(ls | grep -v \\.)
+do
+mv $i ${i}.jpg
+done
+
+for i in $(cat BAR.txt)
+do
+curl -O https://salespak-cdn.iannovate.co.uk/ftpcinnamon/$i
+done
+
+input_file="imagelist.txt"
+
+# Read the file line by line
+{
+    while IFS= read -r filename && IFS= read -r url; do
+        # Construct the output filename with .jpg suffix
+        output_file="${filename}.jpg"
+
+        # Download the image using curl
+        echo "Downloading ${url} to ${output_file}..."
+        curl -o "${output_file}" "${url}"
+    done
+} < "$input_file"
+
+
+input_file="imagelist.txt"
+
+# Read the file line by line records on one line (make sure not dos line endings "sed -i '' $'s/\r$//' your_file.csv" if required)
+{
+while IFS=, read -r code url; do
+  [[ -z "$code" || "$code" == "code" ]] && continue
+  extension="${url##*.}"
+  extension="${extension%%\?*}"
+  output_file="${code}.${extension}"
+  echo "Downloading $url -> $output_file"
+  curl -L -o "$output_file" "$url"
+    done
+} < "$input_file"
+
+
+Zelly
+cut -d"," -f1,10 PS006XX00000016\ -\ CSV\ Export.csv | sed -i '' $'s/\r$//' > PS006XX00000016-code-images.txt
+input_file="PS006XX00000016-code-images.txt"
+{                                                                                                                       
+while IFS=, read -r code url; do
+  [[ -z "$code" || "$code" == "code" ]] && continue
+  extension="${url##*.}"
+  extension="${extension%%\?*}"
+  output_file="${code}.${extension}"
+  echo "Downloading $url -> $output_file"
+  curl -L -o "$output_file" "$url"
+    done
+} < "$input_file"
+
+Crane Embroidered Accessories
+JJ1831
+https://www.papersalad.com/cdn/shop/products/2490_444x600.jpg?v=1619008557
+
+HD2089
+https://www.papersalad.com/cdn/shop/products/hd2089_1659x1800.jpg?v=1628084215
+
+HD2432
+https://www.papersalad.com/cdn/shop/files/HD2432_600x.png?v=1706890182
+
+HD2015
+https://www.papersalad.com/cdn/shop/products/2846_400x.jpg?v=1619007969
+
+HD2042
+https://www.papersalad.com/cdn/shop/products/2906_400x.jpg?v=1619008026
+
+JA1850
+https://www.papersalad.com/cdn/shop/products/JA1850_600x.jpg?v=1667218342
+
+HD20116
+https://www.papersalad.com/cdn/shop/products/HD20116_600x.jpg?v=1663065076
+
+HD20181
+https://www.papersalad.com/cdn/shop/files/HD20181_600x.png?v=1705337109
+
+HL1919
+https://www.papersalad.com/cdn/shop/products/2812_400x.jpg?v=1619008102
+
+HL1932
+https://www.papersalad.com/cdn/shop/products/superheroweb_600x.jpg?v=1633688176
+
+HL1934
+https://www.papersalad.com/cdn/shop/products/BDAYSTARWEB_600x.jpg?v=1633689284
+
+HL1936
+https://www.papersalad.com/cdn/shop/products/3098_400x.jpg?v=1619008136
+
+JA1886
+https://www.papersalad.com/cdn/shop/products/cakeweb_600x.jpg?v=1633447137
+
+JA1895
+https://www.papersalad.com/cdn/shop/products/FABWEB_600x.jpg?v=1633440999
+
+Kali Stielman Order #WHZDEGUHSE
+AA14
+https://cdn.faire.com/fastly/856c8ac6aacb0e039236d7b78badce9f2de88013e48eacd0b3ce07390adc164d.jpeg?bg-color=FFFFFF&dpr=1&fit=crop&format=jpg&height=720&width=720
+AH15
+https://cdn.faire.com/fastly/73f422a2af36228abc5749eb38fc44d8fc68cbec7047fa37f4590f075ceb408f.jpeg?bg-color=FFFFFF&dpr=1&fit=crop&format=jpg&height=720&width=720
+BG17
+https://cdn.faire.com/fastly/9d0f06906f0ee770c6ed3b4a8552a4338c8565033cf8b5aa574bafe8ab07aee7.jpeg?bg-color=FFFFFF&dpr=1&fit=crop&format=jpg&height=720&width=720
+CP01
+https://cdn.faire.com/fastly/c73549abba6d092f0508a258b2306d2c09caf06903683a68c1afaafa0006deeb.jpeg?bg-color=FFFFFF&dpr=1&fit=crop&format=jpg&height=720&width=720
+
+
+Feltsogood
+AKRABINC
+https://feltsogood.co.uk/media/catalog/product/cache/8e110640cc12e5d73d9a9d6670d577d2/h/a/handmade_fair_trade_needle_felt_rabbit_in_cardigan_keyring_1_2.jpg
+AKCAK
+https://feltsogood.co.uk/media/catalog/product/cache/8e110640cc12e5d73d9a9d6670d577d2/h/a/handmade_felt_cactus_keyring.jpg
+ACFPK
+https://feltsogood.co.uk/media/catalog/product/cache/8e110640cc12e5d73d9a9d6670d577d2/h/a/handmade_fair_trade_needle_felt_flying_pig_keyring_1_2.jpg
+AKHHK
+https://feltsogood.co.uk/media/catalog/product/cache/8e110640cc12e5d73d9a9d6670d577d2/h/a/handmade_felt_herbie_hare_keyring_c.jpg
+AKELSE
+https://feltsogood.co.uk/media/catalog/product/cache/8e110640cc12e5d73d9a9d6670d577d2/h/a/handmade_felt_elsie_elephant_keyring_a.jpg
+
+Gisela Graham
+for i in $(cat codelist.txt)
+do
+curl -O https://trade.giselagraham.co.uk/Images/Product/Default/large/${i}.jpg
+done
+
+https://trade.giselagraham.co.uk/Images/Product/Default/large/51521.jpg
+https://trade.giselagraham.co.uk/Images/Product/Default/large/51519.jpg
+https://trade.giselagraham.co.uk/Images/Product/Default/large/85750.jpg
+
+
+$.TOY3320.skuImages[0].sizes.original
+
+https://vendimageuploadcdn.global.ssl.fastly.net/1920,fit/vend-images/product/original/7f9ceefc8791e0f7b45c2e08d89a327d40be0213/1.jpg
+
+
+SELECT 
+    p.id AS product_id,
+    p.name AS product_name,
+    p.sku,
+    MAX(s.sale_date) AS last_sale_date,
+    MAX(c.consignment_date) AS last_order_date,
+    max(inventory_level) As Current_stock
+FROM products p
+INNER JOIN sale_line_items sli ON p.id = sli.product_id
+LEFT JOIN sales s ON sli.sale_id = s.id
+LEFT JOIN consignment_products cp ON p.id = cp.product_id
+LEFT JOIN consignments c ON cp.consignment_id = c.id
+left join inventory i on i.product_id = p.id
+GROUP BY p.id, p.name, p.sku
+having MAX(s.sale_date) < date('now','-365 days')
+and MAX(c.consignment_date) < date('now','-365 days')
+and max(inventory_level)=0
+ORDER BY last_sale_date DESC, last_order_date DESC;
+
+select count(*) from (
+SELECT 
+    p.id AS product_id,
+    p.name AS product_name,
+    p.sku,
+    MAX(s.sale_date) AS last_sale_date,
+    MAX(c.consignment_date) AS last_order_date,
+    max(inventory_level) As Current_stock
+FROM products p
+INNER JOIN sale_line_items sli ON p.id = sli.product_id
+LEFT JOIN sales s ON sli.sale_id = s.id
+LEFT JOIN consignment_products cp ON p.id = cp.product_id
+LEFT JOIN consignments c ON cp.consignment_id = c.id
+left join inventory i on i.product_id = p.id
+GROUP BY p.id, p.name, p.sku
+having MAX(s.sale_date) > date('now','-365 days')
+and MAX(c.consignment_date) < date('now','-365 days')
+and max(inventory_level)=0) as data
+
+
+
+
+SELECT 
+    p.id AS product_id,p.sku,
+    p.name AS product_name,
+    cp.created_at
+from products p 
+left JOIN consignment_products cp ON p.id = cp.product_id
+where cp.created_at is null;
+
+select c.name,c.status,count(*) from
+consignments c 
+LEFT JOIN consignment_products cp ON cp.consignment_id = c.id
+where c.type="SUPPLIER" and c.status like "REC%"
+group by c.name,c.status
+
+
+SELECT 
+    p.id AS product_id,
+    p.name AS product_name,
+    p.sku,
+    MAX(s.sale_date) AS last_sale_date
+FROM products p
+LEFT JOIN sale_line_items sli ON p.id = sli.product_id
+LEFT JOIN sales s ON sli.sale_id = s.id
+
+SELECT 
+    distinct p.sku,p.name
+FROM products p
+LEFT JOIN sale_line_items sli ON p.id = sli.product_id
+left JOIN consignment_products cp ON p.id = cp.product_id
+where sli.id is null and cp.id is null
+
+
+https://bookspeed.b-cdn.net/Images.ashx?v=20240717010542&i=/bookcovers/9780735349087.jpg
+
