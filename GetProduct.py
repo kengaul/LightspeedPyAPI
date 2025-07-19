@@ -1,5 +1,8 @@
-import requests,os
-import json,logging
+import requests
+import os
+import sys
+import json
+import logging
 
 authtoken=os.environ.get('LIGHTSPEED_TOKEN')
 storeurl=os.environ.get('LIGHTSPEED_STORE')
@@ -31,10 +34,18 @@ def fetch_all_products():
             after = products["version"]["max"]
             logging.info(f"Got {len(filtered_products)} products from {after}")
         except KeyError as e:
-            logging.error(f"KeyError encountered: {e} in products: {products["data"][0]}",exc_info=True)
+            first_product = products["data"][0] if products.get("data") else "<no data>"
+            logging.error(
+                f"KeyError encountered: {e} in products: {first_product}",
+                exc_info=True,
+            )
             break
         except TypeError as e:
-            logging.error(f"TypeError encountered: {e} in products: {products["data"][0]}",exc_info=True)
+            first_product = products["data"][0] if products.get("data") else "<no data>"
+            logging.error(
+                f"TypeError encountered: {e} in products: {first_product}",
+                exc_info=True,
+            )
             break
         except Exception as e:
             logging.error(f"Unexpected error occurred: {e}",exc_info=True)
@@ -44,6 +55,11 @@ def fetch_all_products():
 
 def save_products_to_file(products_dict, filename='products.json'):
     """Save products dictionary to a JSON file."""
+    if not products_dict:
+        logging.warning("No product data found; writing empty file")
+        with open(filename, 'w') as file:
+            json.dump({"data": []}, file, indent=4)
+        return
     with open(filename, 'w') as file:
         json.dump(products_dict, file, indent=4)  # Indented for readability
 
@@ -80,9 +96,14 @@ def get_products(after):
 if __name__ == "__main__":
     try:
         products_dict = fetch_all_products()
-        #for product in products_dict:
-        #    logging.info(f"Image {product["sku"]} - {product["skuImages"]}")
+        if not products_dict:
+            logging.info("No products retrieved; creating empty products.json")
+            save_products_to_file({})
+            sys.exit(0)
+
+        # for product in products_dict:
+        #     logging.info(f"Image {product['sku']} - {product['skuImages']}")
         save_products_to_file(products_dict)
-        logging.info(f"Products successfully saved to file.")
+        logging.info("Products successfully saved to file.")
     except Exception as e:
-        logging.error(f"An error occurred: {e}",exc_info=True)
+        logging.error(f"An error occurred: {e}", exc_info=True)
