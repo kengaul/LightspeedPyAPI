@@ -34,7 +34,12 @@ if __name__ == "__main__":
             "custom_fields": {"material": "cotton"}
         }
         
-        product = Product(**product_data)
+        product = Product(
+            **product_data,
+            brands_lookup=brands_lookup,
+            suppliers_lookup=suppliers_lookup,
+            categories_lookup=categories_lookup,
+        )
         created_product = client.create_product(product.dict())
         print("Product created successfully:", created_product)
         
