@@ -50,9 +50,11 @@ class LightspeedAPIClient:
 
 ## Supplier order processing
 
-Order files from different suppliers have inconsistent column names.  Mapping files in `supplier_definitions/` describe how each supplier's export should be translated so that scripts can operate on a common set of fields.  A mapping file is a small YAML document that lists which column contains the SKU, name, price and any other values required by the tooling.
+Supplier exports rarely share the same column layout.  Mapping files under
+`supplier_definitions/` describe how to translate a supplier's headings into the
+field names expected by this project.
 
-Example snippet:
+Example snippet from `supplier_definitions/example_supplier.yaml`:
 
 ```yaml
 sku: "Product Code"
@@ -62,31 +64,32 @@ price: "Net Price"
 
 ### Parsing orders
 
-Use `parse_orders.py` to normalise supplier files.  It reads the appropriate mapping file and writes a standard CSV with columns Lightspeed expects.
+`parse_orders.py` reads a mapping file and produces a normalised CSV.  The
+script accepts either raw CSV or PDF order files.
 
 ```bash
 # CSV input
 LIGHTSPEED_TOKEN=... LIGHTSPEED_STORE=store \
-python parse_orders.py --supplier acme ./orders.csv > parsed.csv
+python parse_orders.py supplier_definitions/example_supplier.yaml orders.csv \
+  --output parsed.csv
 
-# PDF input
-python parse_orders.py --supplier acme ./order.pdf --pdf > parsed.csv
+# PDF input with image extraction
+python parse_orders.py supplier_definitions/example_supplier.yaml orders.pdf \
+  --extract-images --output parsed.csv
 ```
 
-### Uploading images
-
-If product images are available you can rename and upload them once the order CSV is parsed.  The `imageupdate.py` script looks for images named with the SKU and sends them to Lightspeed using the same environment variables:
+Add `--upload-images` to automatically upload any images extracted from a PDF
+or found in the `images/` directory.  The Lightspeed credentials come from the
+`LIGHTSPEED_TOKEN` and `LIGHTSPEED_STORE` environment variables.
 
 ```bash
 LIGHTSPEED_TOKEN=... LIGHTSPEED_STORE=store \
-python imageupdate.py jpg ./images parsed.csv
+python parse_orders.py supplier_definitions/example_supplier.yaml orders.pdf \
+  --extract-images --upload-images --output parsed.csv
 ```
 
-For more advanced matching (for example using supplier codes inside the filename) `ImageUpdateFromCode.py` provides additional logic:
-
-```bash
-python ImageUpdateFromCode.py jpg ./images "Acme Co"
-```
+Manual image uploads are still available using `imageupdate.py` or
+`ImageUpdateFromCode.py` if more control is required.
 
 ## Learning paths
 
