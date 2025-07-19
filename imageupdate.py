@@ -14,6 +14,7 @@ class LightspeedAPI:
         self.store = store
     
     def search_products_by_sku(self, skus):
+        response = None
         try:
             url = f"https://{self.store}.retail.lightspeed.app/api/2.0/search"
             params = [("type", "products")]
@@ -29,12 +30,13 @@ class LightspeedAPI:
                 return lightspeed_products_dict
             else:
                 return None
+        except requests.exceptions.JSONDecodeError:
+            print("Failed to parse JSON from response ", response.content if response else "")
         except requests.exceptions.RequestException as e:
             print("HTTP Request failed with ", e)
-        except requests.exceptions.JSONDecodeError:
-            print("Failed to parse JSON from response ", response.content)
 
     def search_products_by_id(self, ids):
+        response = None
         try:
             url = f"https://{self.store}.retail.lightspeed.app/api/2.0/search"
             params = [("type", "products")]
@@ -50,13 +52,14 @@ class LightspeedAPI:
                 return lightspeed_products_dict
             else:
                 return None
+        except requests.exceptions.JSONDecodeError:
+            print("Failed to parse JSON from response ", response.content if response else "")
         except requests.exceptions.RequestException as e:
             print("HTTP Request failed with ", e)
-        except requests.exceptions.JSONDecodeError:
-            print("Failed to parse JSON from response ", response.content)
 
     def upload_image(self, image_path):
         sku=[os.path.splitext(os.path.basename(image_path))[0]]
+        response = None
         try:
             products=self.search_products_by_sku(sku)
             imagecount=0
@@ -88,10 +91,10 @@ class LightspeedAPI:
             
             else:
                 print(f"No product found {sku} from {image_path}")
+        except requests.exceptions.JSONDecodeError:
+            print("Failed to parse JSON from response ", response.content if response else "")
         except requests.exceptions.RequestException as e:
             print("HTTP Request failed with ", e)
-        except requests.exceptions.JSONDecodeError:
-            print("Failed to parse JSON from response ", response.content)
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
