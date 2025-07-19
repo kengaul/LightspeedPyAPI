@@ -5,8 +5,18 @@ class LightspeedAPIClient:
     API_BASE_URL = f"https://{os.environ.get('LIGHTSPEED_STORE')}.retail.api.lightspeedapp.app/api"
     API_KEY = os.environ.get('LIGHTSPEED_TOKEN')
 
-    def __init__(self, api_key: str):
-        self.api_key = api_key
+    def __init__(self, api_key: str | None = None):
+        """Create a new API client.
+
+        Parameters
+        ----------
+        api_key:
+            Optional API key to use for authentication. If not provided the
+            ``LIGHTSPEED_TOKEN`` environment variable will be used.  This makes
+            the client easier to configure for simple scripts.
+        """
+
+        self.api_key = api_key or self.API_KEY
         self.headers = {
             'Authorization': f'Bearer {self.api_key}',
             'Content-Type': 'application/json'

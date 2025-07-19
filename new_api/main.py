@@ -1,14 +1,19 @@
-from api_client import get_brands, get_suppliers, get_categories, create_product
+"""Example script demonstrating usage of the API client."""
+
+from api_client import LightspeedAPIClient
 from lookups import BrandLookup, SupplierLookup, CategoryLookup
 from models import Product
 import requests
 
 if __name__ == "__main__":
     try:
+        # Create the API client using the token from the environment by default
+        client = LightspeedAPIClient()
+
         # Initialize lookup tables
-        brands_data = get_brands()
-        suppliers_data = get_suppliers()
-        categories_data = get_categories()
+        brands_data = client.get_brands()
+        suppliers_data = client.get_suppliers()
+        categories_data = client.get_categories()
 
         brands_lookup = BrandLookup(brands_data)
         suppliers_lookup = SupplierLookup(suppliers_data)
@@ -30,7 +35,7 @@ if __name__ == "__main__":
         }
         
         product = Product(**product_data)
-        created_product = create_product(product.dict())
+        created_product = client.create_product(product.dict())
         print("Product created successfully:", created_product)
         
     except requests.HTTPError as e:
