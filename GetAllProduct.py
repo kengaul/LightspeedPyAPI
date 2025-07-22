@@ -70,11 +70,11 @@ def get_products(after):
         else:
                 print(response)
                 return None
+    except requests.exceptions.JSONDecodeError as e:
+        logging.error(f"Failed to parse json from response: {e} - {response.content}")
     except requests.exceptions.RequestException as e:
         print("HTTP Request failed with ",e)
-    except requests.exceptions.JSONDecodeError:
-        logging.error(f"Failed to parse json from response: {e} - {response.content}")
-
+   
 if __name__ == "__main__":
     try:
         products_dict = fetch_all_products()

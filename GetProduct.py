@@ -90,7 +90,7 @@ def get_products(after):
                 return None
     except requests.exceptions.RequestException as e:
         print("HTTP Request failed with ",e)
-    except requests.exceptions.JSONDecodeError:
+    except requests.exceptions.JSONDecodeError as e:
         logging.error(f"Failed to parse json from response: {e} - {response.content}")
 
 if __name__ == "__main__":
