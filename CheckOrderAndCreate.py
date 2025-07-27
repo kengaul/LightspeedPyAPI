@@ -97,10 +97,11 @@ class LightspeedAPI:
                 return lightspeed_products_dict
             else:
                 return None
-        except requests.exceptions.RequestException as e:
-            print("HTTP Request failed with ", e)
         except requests.exceptions.JSONDecodeError:
             print("Failed to parse JSON from response ", response.content)
+        except requests.exceptions.RequestException as e:
+            print("HTTP Request failed with ", e)
+        
 
     def upload_image(self, product_id, image_path):
         url = f"https://{self.store}.retail.lightspeed.app/api/2.0/products/{product_id}/actions/image_upload"
@@ -114,10 +115,11 @@ class LightspeedAPI:
                 return "Image Updated"
             else:
                 return "Image Update Failed"
-        except requests.exceptions.RequestException as e:
-            print("HTTP Request failed with ", e)
         except requests.exceptions.JSONDecodeError:
             print("Failed to parse JSON from response ", response.content)
+        except requests.exceptions.RequestException as e:
+            print("HTTP Request failed with ", e)
+
 
     def create_product(self, product):
         try:
@@ -131,11 +133,11 @@ class LightspeedAPI:
                 return response.json()
             else:
                 print(response)
-        except requests.exceptions.RequestException as e:
-            print("HTTP Request failed with ", e)
         except requests.exceptions.JSONDecodeError:
             print("Failed to parse JSON from response ", response.content)
-
+        except requests.exceptions.RequestException as e:
+            print("HTTP Request failed with ", e)
+        
 def csv_to_products(csv_file, key_column):
     products = []
     variant_types = lightspeed_api.get_variants()

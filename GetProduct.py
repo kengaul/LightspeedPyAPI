@@ -66,7 +66,7 @@ def save_products_to_file(products_dict, filename='products.json'):
 def get_products(after):
     # Request Search
     # GET https://daisycheynes.retail.lightspeed.app/api/2.0/search
-
+    response = None
     try:
         url=f"https://{storeurl}.retail.lightspeed.app/api/2.0/products"
         params={
@@ -88,10 +88,10 @@ def get_products(after):
         else:
                 print(response)
                 return None
-    except requests.exceptions.RequestException as e:
-        print("HTTP Request failed with ",e)
     except requests.exceptions.JSONDecodeError as e:
         logging.error(f"Failed to parse json from response: {e} - {response.content}")
+    except requests.exceptions.RequestException as e:
+        print("HTTP Request failed with ",e)
 
 if __name__ == "__main__":
     try:

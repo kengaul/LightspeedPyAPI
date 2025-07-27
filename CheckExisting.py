@@ -19,8 +19,10 @@ requests_log = logging.getLogger("urllib3")
 requests_log.setLevel(logging.DEBUG)
 requests_log.propagate = True  """
 
+from typing import Optional
+
 class Product:
-    def __init__(self, sku: str, id: str, name: str, supply_price: float, is_variant: bool=False, supplier: str=None, supplier_code: str=None, product_category: str=None, brand_id: str=None, tag_ids: list[str]=None, variant_type: str=None, variant_type_value: str=None):
+    def __init__(self, sku: str, id: Optional[str], name: str, supply_price: float, is_variant: bool=False, supplier: [Optional]str=None, supplier_code: str=None, product_category: [Optional]str, brand_id: str=None, tag_ids: list[str]=None, variant_type: str=None, variant_type_value: str=None):
         try:
             #print(f'Initializing Product {sku}')
             self.sku = sku

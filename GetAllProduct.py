@@ -48,7 +48,7 @@ def save_products_to_file(products_dict, filename='products.json'):
 def get_products(after):
     # Request Search
     # GET https://daisycheynes.retail.lightspeed.app/api/2.0/search
-
+    response = None
     try:
         url=f"https://{storeurl}.retail.lightspeed.app/api/2.0/products"
         params={

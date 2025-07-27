@@ -1,0 +1,6 @@
+product:
+  name: Description	
+  supplier_code: Stock Code
+  sku: Barcode
+  price: Item Price (net)
+  order_quantity: Line Qty

@@ -4,22 +4,21 @@ from typing import List, Optional, Union
 from .lookups_runtime import brand_lookup, supplier_lookup, category_lookup
 
 
-class VariantAttributes(BaseModel):
+""" class VariantAttributes(BaseModel):
     """Optional attributes for a product variant."""
 
     size: Optional[str] = None
     color: Optional[str] = None
-    material: Optional[str] = None
+    material: Optional[str] = None """
 
 
-class Variant(BaseModel):
+""" class Variant(BaseModel):
     """Representation of a variant row."""
 
     id: Optional[str] = None
     sku: str
     price: float
-    inventory_level: int
-    attributes: VariantAttributes
+    attributes: VariantAttributes """
 
 
 class Product(BaseModel):
@@ -27,12 +26,14 @@ class Product(BaseModel):
 
     id: Optional[str] = None
     name: str
+    sku: str
     description: Optional[str] = None
     category: Union[str, Optional[str]] = None
     brand: Union[str, Optional[str]] = None
     supplier: Union[str, Optional[str]] = None
-    variants: List[Variant]
+    price: float 
     tags: Optional[List[str]] = None
+    supplier_code: Optional[str] = None
     custom_fields: Optional[dict] = None
 
     @root_validator(pre=True)
